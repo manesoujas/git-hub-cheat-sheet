@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Git & GitHub Cheat Sheet</title>
+    <title>Advanced Git & GitHub Architect Hub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400&display=swap');
 
-        /* Default Dark Mode (Slate) */
+        /* Theme Variables */
         :root {
             --bg-grad-start: #0f172a;
             --bg-grad-end: #1e293b;
             --accent: #38bdf8;
+            --success: #10b981;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --code-bg: rgba(0, 0, 0, 0.4);
             --card-shadow: rgba(0, 0, 0, 0.3);
+            --input-bg: rgba(255, 255, 255, 0.05);
         }
 
-        /* Light Mode Variables */
         [data-theme="light"] {
             --bg-grad-start: #e2e8f0;
             --bg-grad-end: #f8fafc;
             --accent: #0284c7;
+            --success: #059669;
             --text-main: #0f172a;
             --text-muted: #475569;
             --glass-bg: rgba(255, 255, 255, 0.6);
             --glass-border: rgba(255, 255, 255, 0.8);
             --code-bg: rgba(15, 23, 42, 0.08);
             --card-shadow: rgba(0, 0, 0, 0.05);
+            --input-bg: rgba(0, 0, 0, 0.05);
         }
 
+        /* Global Styles */
         body {
             margin: 0;
             padding: 0;
@@ -44,13 +48,60 @@
             transition: background 0.4s ease, color 0.4s ease;
         }
 
-        /* Theme Toggle Button */
-        .theme-toggle {
+        /* Top Bar: Search & Theme */
+        .top-bar {
             position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-container input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 16px;
+            height: 16px;
+        }
+
+        .theme-toggle {
+            background: transparent;
             border: 1px solid var(--glass-border);
             color: var(--text-main);
             padding: 0.5rem 1rem;
@@ -62,17 +113,18 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 1000;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease;
         }
 
         .theme-toggle:hover {
             transform: scale(1.05);
+            background: var(--input-bg);
         }
 
+        /* Typography & Header */
         header {
             text-align: center;
-            padding: 5rem 1rem 3rem;
+            padding: 7rem 1rem 3rem;
         }
 
         h1 {
@@ -92,14 +144,15 @@
             margin: 0 auto;
         }
 
+        /* Grid Layout */
         .container {
             max-width: 1400px;
             margin: 0 auto 3rem;
             padding: 0 2rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 1.5rem;
-            align-items: start; /* Prevents cards from stretching vertically */
+            align-items: start;
         }
 
         .glass-card {
@@ -109,7 +162,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 1.75rem;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .glass-card:hover {
@@ -125,36 +178,66 @@
             border-bottom: 1px solid var(--glass-border);
             padding-bottom: 0.75rem;
             margin-bottom: 1.25rem;
+        }
+
+        /* Command Blocks with Copy Button */
+        .command-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .code-container {
+            display: flex;
+            align-items: stretch;
+            background: var(--code-bg);
+            border-radius: 6px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 0.4rem;
+            overflow: hidden;
+        }
+
+        code {
+            flex-grow: 1;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            word-break: break-all;
             display: flex;
             align-items: center;
         }
 
-        .command-group {
-            margin-bottom: 1.5rem;
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-left: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 0 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .command-group:last-child {
-            margin-bottom: 0;
+        .copy-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
         }
 
-        code {
-            font-family: 'JetBrains Mono', monospace;
-            background: var(--code-bg);
-            padding: 0.35rem 0.6rem;
-            border-radius: 6px;
-            color: var(--text-main);
-            font-size: 0.85rem;
-            display: block;
-            margin-bottom: 0.35rem;
-            border: 1px solid var(--glass-border);
-            word-wrap: break-word;
+        .copy-btn.copied {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
         }
 
         .desc {
             font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 0.75rem;
             padding-left: 0.25rem;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         footer {
@@ -170,219 +253,250 @@
 </head>
 <body>
 
-    <button class="theme-toggle" id="themeToggle">
-        <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <!-- Default to Sun icon for switching to light mode -->
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-        <span id="themeText">Light Mode</span>
-    </button>
+    <div class="top-bar">
+        <div class="search-container">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search commands or descriptions... (e.g., rebase, branch)">
+        </div>
+
+        <button class="theme-toggle" id="themeToggle">
+            <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <span id="themeText">Light</span>
+        </button>
+    </div>
 
     <header>
         <h1>Git & GitHub Architect Hub</h1>
-        <p>The definitive tracking protocol reference. From basic versioning to advanced tree rewriting.</p>
+        <p>The definitive tracking protocol reference with one-click copy capability.</p>
     </header>
 
-    <div class="container">
-        <!-- SETUP & CONFIGURATION -->
+    <div class="container" id="cardsContainer">
+        
         <div class="glass-card">
             <h2>Setup & Init</h2>
             <div class="command-group">
-                <code>git config --global user.name "[name]"</code>
+                <div class="code-container">
+                    <code>git config --global user.name "John Doe"</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
                 <div class="desc">Sets the global name attached to your commits.</div>
-                
-                <code>git config --global user.email "[email]"</code>
-                <div class="desc">Sets the global email attached to your commits.</div>
-
-                <code>git init</code>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git config --global core.editor "code --wait"</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Sets VS Code as the default editor for resolving merge conflicts.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git init</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
                 <div class="desc">Initializes a new local repository in the current directory.</div>
-
-                <code>git clone [url]</code>
-                <div class="desc">Downloads a project and its entire version history.</div>
             </div>
         </div>
 
-        <!-- STAGE & SNAPSHOT -->
         <div class="glass-card">
             <h2>Stage & Snapshot</h2>
             <div class="command-group">
-                <code>git status</code>
-                <div class="desc">Lists all new or modified files to be committed.</div>
-
-                <code>git add [file]</code>
-                <div class="desc">Snapshots the file in preparation for versioning.</div>
-
-                <code>git add .</code>
+                <div class="code-container">
+                    <code>git add .</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
                 <div class="desc">Stages all current changes in the directory.</div>
-
-                <code>git commit -m "[message]"</code>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git commit -m "Refactor servlet to use POJO-based architecture"</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
                 <div class="desc">Records file snapshots permanently in version history.</div>
-
-                <code>git commit --amend -m "[new message]"</code>
-                <div class="desc">Modifies the last commit message or adds forgotten files to it.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git commit --amend --no-edit</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Adds staged files to the very last commit without changing its message.</div>
             </div>
         </div>
 
-        <!-- BRANCH & MERGE -->
         <div class="glass-card">
             <h2>Branch & Merge</h2>
             <div class="command-group">
-                <code>git branch -a</code>
-                <div class="desc">Lists all local and remote branches.</div>
-
-                <code>git checkout -b [branch-name]</code>
-                <div class="desc">Creates a new branch and switches to it immediately.</div>
-
-                <code>git switch [branch-name]</code>
-                <div class="desc">Modern command to switch between branches.</div>
-
-                <code>git merge [branch]</code>
-                <div class="desc">Combines the specified branch's history into the current branch.</div>
-
-                <code>git branch -d [branch-name]</code>
-                <div class="desc">Deletes the specified branch safely (prevents deleting unmerged changes).</div>
+                <div class="code-container">
+                    <code>git checkout -b feature/flutter-ui-update</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Creates a new feature branch and switches to it immediately.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git merge [branch-name] --no-ff</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Merges a branch and forces a merge commit to preserve history context.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git branch -M main</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Force renames the current branch to 'main'.</div>
             </div>
         </div>
 
-        <!-- ADVANCED HISTORY SHAPING -->
         <div class="glass-card">
-            <h2>Advanced History Shaping</h2>
+            <h2>Rebase & Cherry-Pick</h2>
             <div class="command-group">
-                <code>git rebase [branch]</code>
-                <div class="desc">Applies any commits of current branch ahead of specified one. Keeps history linear.</div>
-
-                <code>git rebase -i HEAD~[n]</code>
-                <div class="desc">Interactive rebase for the last <em>n</em> commits. Used to squash, edit, or reorder commits.</div>
-
-                <code>git cherry-pick [commit-hash]</code>
-                <div class="desc">Takes a specific commit from another branch and applies it to the current branch.</div>
+                <div class="code-container">
+                    <code>git rebase -i HEAD~3</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Interactive rebase to squash, edit, or reorder the last 3 commits.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git rebase --onto main feature-old feature-new</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Transplants a branch from an old base to a new base.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git cherry-pick [commit-hash]</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Takes a specific commit from another branch and applies it here.</div>
             </div>
         </div>
 
-        <!-- SHARE & UPDATE -->
         <div class="glass-card">
-            <h2>Share & Update (Remotes)</h2>
+            <h2>Stash & Worktrees</h2>
             <div class="command-group">
-                <code>git remote add origin [url]</code>
-                <div class="desc">Connects your local repo to a remote server.</div>
-
-                <code>git fetch</code>
-                <div class="desc">Downloads history from remote tracking branches without merging them.</div>
-
-                <code>git pull --rebase</code>
-                <div class="desc">Fetches and merges changes, but puts your local commits on top of the remote ones.</div>
-
-                <code>git push -u origin [branch]</code>
-                <div class="desc">Uploads local branch commits and sets upstream tracking.</div>
-            </div>
-        </div>
-
-        <!-- INSPECT & COMPARE -->
-        <div class="glass-card">
-            <h2>Inspect & Debug</h2>
-            <div class="command-group">
-                <code>git log --oneline --graph --all</code>
-                <div class="desc">Shows a highly readable, graphical tree view of all branches.</div>
-
-                <code>git diff [branch1]..[branch2]</code>
-                <div class="desc">Shows the content differences between two branches.</div>
-
-                <code>git blame [file]</code>
-                <div class="desc">Shows who changed what line in a file and in which commit.</div>
-
-                <code>git reflog</code>
-                <div class="desc">Logs all branch updates and HEAD movements. The ultimate undo safety net.</div>
-            </div>
-        </div>
-
-        <!-- STASH MANAGEMENT -->
-        <div class="glass-card">
-            <h2>Stash Management</h2>
-            <div class="command-group">
-                <code>git stash push -m "message"</code>
+                <div class="code-container">
+                    <code>git stash push -m "WIP glassmorphism UI"</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
                 <div class="desc">Temporarily stores modified files with a descriptive label.</div>
-
-                <code>git stash pop</code>
-                <div class="desc">Restores the most recently stashed files and removes them from the stash list.</div>
-
-                <code>git stash apply stash@{n}</code>
-                <div class="desc">Applies a specific stash from the list without deleting it.</div>
             </div>
-        </div>
-
-        <!-- TAGS & SUBMODULES -->
-        <div class="glass-card">
-            <h2>Tags & Submodules</h2>
             <div class="command-group">
-                <code>git tag -a v1.0.0 -m "Release 1.0.0"</code>
-                <div class="desc">Creates an annotated tag for a specific release point.</div>
-
-                <code>git push origin --tags</code>
-                <div class="desc">Pushes all local tags to the remote repository.</div>
-
-                <code>git submodule add [url]</code>
-                <div class="desc">Embeds another Git repository inside your current repository.</div>
-                
-                <code>git submodule update --init --recursive</code>
-                <div class="desc">Initializes and clones submodules recursively.</div>
+                <div class="code-container">
+                    <code>git stash pop</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Restores the most recent stash and removes it from the stash list.</div>
             </div>
-        </div>
-
-        <!-- UNDOING & CLEANING -->
-        <div class="glass-card">
-            <h2>Undoing & Cleaning</h2>
             <div class="command-group">
-                <code>git reset [file]</code>
-                <div class="desc">Unstages the file, but preserves its contents in the working directory.</div>
-
-                <code>git reset --hard HEAD</code>
-                <div class="desc">Discards all local changes in tracked files and reverts to the last commit.</div>
-
-                <code>git revert [commit-hash]</code>
-                <div class="desc">Creates a new commit that safely undoes changes from a past commit.</div>
-
-                <code>git clean -fd</code>
-                <div class="desc">Force deletes untracked files and directories.</div>
+                <div class="code-container">
+                    <code>git worktree add ../project-hotfix main</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Checks out a branch in a separate physical folder (work on 2 branches at once).</div>
             </div>
         </div>
 
-        <!-- GITHUB CLI (gh) EXCLUSIVES -->
+        <div class="glass-card">
+            <h2>Undo & Data Recovery</h2>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git reset --hard HEAD~1</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Discards the last commit and all local uncommitted changes.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git revert [commit-hash]</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Safely creates a new commit that undoes changes from a specific past commit.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git reflog</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">The safety net. Logs all HEAD movements to recover "deleted" commits or branches.</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Debugging (Git Bisect)</h2>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git bisect start</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Starts a binary search algorithm to find which commit introduced a bug.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git bisect bad</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Marks the current commit as broken/containing the bug.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git bisect good [commit-hash]</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Marks an older commit as working. Git will checkout a middle commit to test.</div>
+            </div>
+        </div>
+
         <div class="glass-card">
             <h2>GitHub CLI (`gh`)</h2>
             <div class="command-group">
-                <code>gh auth login</code>
-                <div class="desc">Authenticate with your GitHub account via terminal.</div>
-
-                <code>gh repo create [name] --public --clone</code>
+                <div class="code-container">
+                    <code>gh repo create [name] --public --clone</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
                 <div class="desc">Creates a new public repo on GitHub and clones it locally instantly.</div>
-
-                <code>gh pr create --title "Title"</code>
-                <div class="desc">Create a pull request directly from the terminal.</div>
-
-                <code>gh pr checkout [pr-number]</code>
-                <div class="desc">Checks out a specific pull request branch locally to test it.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>gh pr create -t "Add login UI" -b "Details"</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Opens a Pull Request for your current branch directly from the terminal.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>gh issue list --state open</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Lists all currently open issues for the repository.</div>
             </div>
         </div>
+
     </div>
 
     <footer>
-        <p>Built with minimalist structure and responsive glassmorphism UI.</p>
+        <p>Built for efficiency. Copy with a click. Search instantly.</p>
     </footer>
 
     <script>
+        // 1. Theme Toggle Logic
         const themeToggle = document.getElementById('themeToggle');
         const themeText = document.getElementById('themeText');
         const themeIcon = document.getElementById('themeIcon');
         
-        // Check for saved theme preference or default to dark
         const currentTheme = localStorage.getItem('theme') || 'dark';
         if (currentTheme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
@@ -408,15 +522,63 @@
 
         function updateToggleUI(theme) {
             if (theme === 'light') {
-                themeText.textContent = 'Dark Mode';
-                // Moon Icon
+                themeText.textContent = 'Dark';
                 themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
             } else {
-                themeText.textContent = 'Light Mode';
-                // Sun Icon
+                themeText.textContent = 'Light';
                 themeIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
             }
         }
+
+        // 2. Copy to Clipboard Logic
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        const copyIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+        const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+        copyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const codeElement = btn.previousElementSibling;
+                const textToCopy = codeElement.innerText;
+
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    btn.innerHTML = checkIcon;
+                    btn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = copyIcon;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+
+        // 3. Live Search Filter Logic
+        const searchInput = document.getElementById('searchInput');
+        const commandGroups = document.querySelectorAll('.command-group');
+        const cards = document.querySelectorAll('.glass-card');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+
+            commandGroups.forEach(group => {
+                const text = group.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    group.classList.remove('hidden');
+                } else {
+                    group.classList.add('hidden');
+                }
+            });
+
+            // Hide entirely empty cards
+            cards.forEach(card => {
+                const visibleCommands = card.querySelectorAll('.command-group:not(.hidden)');
+                if (visibleCommands.length === 0) {
+                    card.style.display = 'none';
+                } else {
+                    card.style.display = 'block';
+                }
+            });
+        });
     </script>
 </body>
 </html>
