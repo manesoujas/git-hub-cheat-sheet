@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Git & GitHub Architect Hub</title>
+    <title>Git & GitHub Architect Hub | Noob to Pro</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400&display=swap');
 
-        /* Theme Variables */
         :root {
             --bg-grad-start: #0f172a;
             --bg-grad-end: #1e293b;
             --accent: #38bdf8;
             --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --glass-bg: rgba(255, 255, 255, 0.03);
@@ -27,6 +28,8 @@
             --bg-grad-end: #f8fafc;
             --accent: #0284c7;
             --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
             --text-main: #0f172a;
             --text-muted: #475569;
             --glass-bg: rgba(255, 255, 255, 0.6);
@@ -36,7 +39,6 @@
             --input-bg: rgba(0, 0, 0, 0.05);
         }
 
-        /* Global Styles */
         body {
             margin: 0;
             padding: 0;
@@ -48,7 +50,7 @@
             transition: background 0.4s ease, color 0.4s ease;
         }
 
-        /* Top Bar: Search & Theme */
+        /* Top Bar */
         .top-bar {
             position: fixed;
             top: 0;
@@ -68,7 +70,7 @@
 
         .search-container {
             flex-grow: 1;
-            max-width: 500px;
+            max-width: 600px;
             position: relative;
         }
 
@@ -83,6 +85,7 @@
             font-size: 0.95rem;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
         }
 
         .search-container input:focus {
@@ -121,17 +124,16 @@
             background: var(--input-bg);
         }
 
-        /* Typography & Header */
         header {
             text-align: center;
             padding: 7rem 1rem 3rem;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 3rem;
             margin-bottom: 0.5rem;
             font-weight: 700;
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
             background: linear-gradient(to right, var(--text-main), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -140,17 +142,16 @@
         header p {
             color: var(--text-muted);
             font-size: 1.15rem;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
         }
 
-        /* Grid Layout */
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto 3rem;
             padding: 0 2rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
             gap: 1.5rem;
             align-items: start;
         }
@@ -172,15 +173,29 @@
         }
 
         .glass-card h2 {
-            color: var(--accent);
             font-size: 1.3rem;
             margin-top: 0;
             border-bottom: 1px solid var(--glass-border);
             padding-bottom: 0.75rem;
             margin-bottom: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Command Blocks with Copy Button */
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge.noob { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
+        .badge.mid { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge.pro { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
         .command-group {
             margin-bottom: 1.5rem;
             position: relative;
@@ -199,12 +214,13 @@
         code {
             flex-grow: 1;
             font-family: 'JetBrains Mono', monospace;
-            padding: 0.5rem 0.75rem;
+            padding: 0.6rem 0.75rem;
             color: var(--text-main);
             font-size: 0.85rem;
             word-break: break-all;
             display: flex;
             align-items: center;
+            white-space: pre-wrap;
         }
 
         .copy-btn {
@@ -212,12 +228,13 @@
             border: none;
             border-left: 1px solid var(--glass-border);
             color: var(--text-muted);
-            padding: 0 0.75rem;
+            padding: 0 0.8rem;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            min-width: 44px;
         }
 
         .copy-btn:hover {
@@ -234,11 +251,10 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             padding-left: 0.25rem;
+            line-height: 1.4;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         footer {
             text-align: center;
@@ -259,7 +275,7 @@
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="searchInput" placeholder="Search commands or descriptions... (e.g., rebase, branch)">
+            <input type="text" id="searchInput" placeholder="Search commands, aliases, or workflows...">
         </div>
 
         <button class="theme-toggle" id="themeToggle">
@@ -280,48 +296,55 @@
 
     <header>
         <h1>Git & GitHub Architect Hub</h1>
-        <p>The definitive tracking protocol reference with one-click copy capability.</p>
+        <p>The exhaustive tracking protocol reference. From initial configuration to rewriting history trees.</p>
     </header>
 
     <div class="container" id="cardsContainer">
         
         <div class="glass-card">
-            <h2>Setup & Init</h2>
+            <h2><span style="color: var(--accent);">Pro Aliases (Shortcuts)</span> <span class="badge pro">Pro</span></h2>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git config --global user.name "John Doe"</code>
+                    <code>git config --global alias.co checkout<br>git config --global alias.br branch<br>git config --global alias.ci commit<br>git config --global alias.st status</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Sets the global name attached to your commits.</div>
+                <div class="desc">Sets up massive keystroke savers. You can now just type <code>git st</code> or <code>git co</code>.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git config --global core.editor "code --wait"</code>
+                    <code>git config --global alias.unstage 'reset HEAD --'</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Sets VS Code as the default editor for resolving merge conflicts.</div>
+                <div class="desc">Creates <code>git unstage [file]</code> to quickly remove a file from the current commit queue.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git init</code>
+                    <code>git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Initializes a new local repository in the current directory.</div>
+                <div class="desc">The ultimate visual tree shortcut. Type <code>git lg</code> to see a beautiful visual history map.</div>
             </div>
         </div>
 
         <div class="glass-card">
-            <h2>Stage & Snapshot</h2>
+            <h2><span style="color: var(--accent);">Stage & Snapshot</span> <span class="badge noob">Noob</span></h2>
             <div class="command-group">
                 <div class="code-container">
                     <code>git add .</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Stages all current changes in the directory.</div>
+                <div class="desc">Stages all current changes. The most commonly used command.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git commit -m "Refactor servlet to use POJO-based architecture"</code>
+                    <code>git add -p</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc"><strong>(Pro Shortcut)</strong> Interactive patch mode. Lets you review and stage specific chunks of a file instead of the whole thing.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git commit -m "Refactor to POJO-based architecture"</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
                 <div class="desc">Records file snapshots permanently in version history.</div>
@@ -331,157 +354,164 @@
                     <code>git commit --amend --no-edit</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Adds staged files to the very last commit without changing its message.</div>
+                <div class="desc">Adds staged files to the last commit without changing its message. A massive lifesaver.</div>
             </div>
         </div>
 
         <div class="glass-card">
-            <h2>Branch & Merge</h2>
+            <h2><span style="color: var(--accent);">Branch & Merge</span> <span class="badge mid">Mid</span></h2>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git checkout -b feature/flutter-ui-update</code>
+                    <code>git switch -c feature/flutter-glass-ui</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Creates a new feature branch and switches to it immediately.</div>
+                <div class="desc">The modern, safer alternative to <code>checkout -b</code>. Creates and switches to a new branch.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git merge [branch-name] --no-ff</code>
+                    <code>git branch -D [branch-name]</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Merges a branch and forces a merge commit to preserve history context.</div>
+                <div class="desc">Force deletes a branch even if it has unmerged changes. Use with caution.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git branch -M main</code>
+                    <code>git merge [branch] --squash</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Force renames the current branch to 'main'.</div>
-            </div>
-        </div>
-
-        <div class="glass-card">
-            <h2>Rebase & Cherry-Pick</h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git rebase -i HEAD~3</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Interactive rebase to squash, edit, or reorder the last 3 commits.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git rebase --onto main feature-old feature-new</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Transplants a branch from an old base to a new base.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git cherry-pick [commit-hash]</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Takes a specific commit from another branch and applies it here.</div>
+                <div class="desc">Takes all commits from the target branch and puts them into a single, clean commit on your current branch.</div>
             </div>
         </div>
 
         <div class="glass-card">
-            <h2>Stash & Worktrees</h2>
+            <h2><span style="color: var(--accent);">Rebase & Cherry-Pick</span> <span class="badge pro">Pro</span></h2>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git stash push -m "WIP glassmorphism UI"</code>
+                    <code>git pull --rebase origin main</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Temporarily stores modified files with a descriptive label.</div>
+                <div class="desc">Fetches remote changes and rebases your local commits on top. Keeps history perfectly linear.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git stash pop</code>
+                    <code>git rebase -i HEAD~4</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Restores the most recent stash and removes it from the stash list.</div>
+                <div class="desc">Interactive mode. Allows you to squash, rename, drop, or reorder your last 4 commits.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git worktree add ../project-hotfix main</code>
+                    <code>git cherry-pick [commit-hash] -n</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Checks out a branch in a separate physical folder (work on 2 branches at once).</div>
+                <div class="desc">Pulls a specific commit from anywhere, but the <code>-n</code> (no-commit) flag stages it so you can edit before committing.</div>
             </div>
         </div>
 
         <div class="glass-card">
-            <h2>Undo & Data Recovery</h2>
+            <h2><span style="color: var(--accent);">Stash & Worktrees</span> <span class="badge pro">Pro</span></h2>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git reset --hard HEAD~1</code>
+                    <code>git stash push -m "WIP offline-first SQLite schema"</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Discards the last commit and all local uncommitted changes.</div>
+                <div class="desc">Temporarily stores modified files with a descriptive label so you don't lose track of it in <code>git stash list</code>.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git revert [commit-hash]</code>
+                    <code>git worktree add ../dev-club-projects main</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Safely creates a new commit that undoes changes from a specific past commit.</div>
+                <div class="desc">The ultimate architect trick. Checks out a branch in a totally separate physical folder so you can work on two branches simultaneously without stashing.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git worktree remove ../dev-club-projects</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Safely cleans up the linked worktree directory.</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2><span style="color: var(--accent);">Undo & Data Recovery</span> <span class="badge pro">Pro</span></h2>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git reset --soft HEAD~1</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Undoes the last commit, but keeps all the file changes staged and ready.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git reset --hard origin/main</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Destructive! Completely forces your local branch to perfectly match the remote branch, discarding local changes.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
                     <code>git reflog</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">The safety net. Logs all HEAD movements to recover "deleted" commits or branches.</div>
+                <div class="desc">The ultimate safety net. Logs every time HEAD moves. Use this to recover "deleted" commits or branches.</div>
+            </div>
+            <div class="command-group">
+                <div class="code-container">
+                    <code>git clean -fd</code>
+                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                </div>
+                <div class="desc">Forcefully deletes untracked files and directories from your workspace.</div>
             </div>
         </div>
 
         <div class="glass-card">
-            <h2>Debugging (Git Bisect)</h2>
+            <h2><span style="color: var(--accent);">Debug & Inspect</span> <span class="badge mid">Mid</span></h2>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git bisect start</code>
+                    <code>git bisect start<br>git bisect bad<br>git bisect good [working-hash]</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Starts a binary search algorithm to find which commit introduced a bug.</div>
+                <div class="desc">Automates finding a bug. It uses binary search to pinpoint exactly which commit broke the code.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git bisect bad</code>
+                    <code>git diff --staged</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Marks the current commit as broken/containing the bug.</div>
+                <div class="desc">Shows what you are about to commit (differences between index and last commit).</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>git bisect good [commit-hash]</code>
+                    <code>git blame [file]</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Marks an older commit as working. Git will checkout a middle commit to test.</div>
+                <div class="desc">Shows who modified each line of a file, in which commit, and when.</div>
             </div>
         </div>
 
         <div class="glass-card">
-            <h2>GitHub CLI (`gh`)</h2>
+            <h2><span style="color: var(--accent);">GitHub CLI (`gh`)</span> <span class="badge mid">Mid</span></h2>
             <div class="command-group">
                 <div class="code-container">
-                    <code>gh repo create [name] --public --clone</code>
+                    <code>gh repo create PrivLedger --public --clone</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Creates a new public repo on GitHub and clones it locally instantly.</div>
+                <div class="desc">Creates a new public repo directly on GitHub and clones it locally in one step.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>gh pr create -t "Add login UI" -b "Details"</code>
+                    <code>gh pr create --fill</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Opens a Pull Request for your current branch directly from the terminal.</div>
+                <div class="desc">Instantly opens a Pull Request using the current branch and commit messages for the PR details.</div>
             </div>
             <div class="command-group">
                 <div class="code-container">
-                    <code>gh issue list --state open</code>
+                    <code>gh repo view --web</code>
                     <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
-                <div class="desc">Lists all currently open issues for the repository.</div>
+                <div class="desc">Opens the current repository in your default web browser.</div>
             </div>
         </div>
 
@@ -538,7 +568,8 @@
         copyButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const codeElement = btn.previousElementSibling;
-                const textToCopy = codeElement.innerText;
+                // Use innerText and replace multiple spaces/newlines to handle HTML <br> tags cleanly
+                const textToCopy = codeElement.innerText.replace(/\n\s*\n/g, '\n');
 
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     btn.innerHTML = checkIcon;
@@ -582,3 +613,4 @@
     </script>
 </body>
 </html>
+
