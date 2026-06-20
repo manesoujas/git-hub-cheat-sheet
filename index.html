@@ -1,616 +1,874 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Git & GitHub Architect Hub | Noob to Pro</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        :root {
-            --bg-grad-start: #0f172a;
-            --bg-grad-end: #1e293b;
-            --accent: #38bdf8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --code-bg: rgba(0, 0, 0, 0.4);
-            --card-shadow: rgba(0, 0, 0, 0.3);
-            --input-bg: rgba(255, 255, 255, 0.05);
-        }
+  :root {
+    --bg: #060b18;
+    --bg2: #0d1529;
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.12);
+    --glass-hover: rgba(255,255,255,0.09);
+    --cyan: #00d4ff;
+    --cyan-dim: rgba(0,212,255,0.15);
+    --cyan-glow: rgba(0,212,255,0.08);
+    --purple: #7c5cbf;
+    --purple-dim: rgba(124,92,191,0.2);
+    --text: #e2eeff;
+    --text-dim: #8ba3c7;
+    --text-muted: #4a6080;
+    --green: #00e5a0;
+    --amber: #ffb830;
+    --red: #ff5f7e;
+    --orange: #ff8c42;
+  }
 
-        [data-theme="light"] {
-            --bg-grad-start: #e2e8f0;
-            --bg-grad-end: #f8fafc;
-            --accent: #0284c7;
-            --success: #059669;
-            --warning: #d97706;
-            --danger: #dc2626;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --glass-bg: rgba(255, 255, 255, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.8);
-            --code-bg: rgba(15, 23, 42, 0.08);
-            --card-shadow: rgba(0, 0, 0, 0.05);
-            --input-bg: rgba(0, 0, 0, 0.05);
-        }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-grad-start), var(--bg-grad-end));
-            background-attachment: fixed;
-            color: var(--text-main);
-            line-height: 1.6;
-            transition: background 0.4s ease, color 0.4s ease;
-        }
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,212,255,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124,92,191,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(0,100,200,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-        /* Top Bar */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--glass-border);
-            z-index: 1000;
-            box-sizing: border-box;
-        }
+  /* Grid lines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-        .search-container {
-            flex-grow: 1;
-            max-width: 600px;
-            position: relative;
-        }
+  /* ──────── HEADER ──────── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    background: rgba(6,11,24,0.75);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0 2rem;
+  }
 
-        .search-container input {
-            width: 100%;
-            padding: 0.6rem 1rem 0.6rem 2.5rem;
-            border-radius: 50px;
-            border: 1px solid var(--glass-border);
-            background: var(--input-bg);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            box-sizing: border-box;
-        }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 72px;
+  }
 
-        .search-container input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-        }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
 
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            width: 16px;
-            height: 16px;
-        }
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    flex-shrink: 0;
+  }
 
-        .theme-toggle {
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.2s ease, background 0.2s ease;
-        }
+  .logo-text h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
 
-        .theme-toggle:hover {
-            transform: scale(1.05);
-            background: var(--input-bg);
-        }
+  .logo-text p {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+  }
 
-        header {
-            text-align: center;
-            padding: 7rem 1rem 3rem;
-        }
+  .search-wrap {
+    flex: 1;
+    max-width: 500px;
+    position: relative;
+  }
 
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            background: linear-gradient(to right, var(--text-main), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+  .search-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 15px;
+    pointer-events: none;
+  }
 
-        header p {
-            color: var(--text-muted);
-            font-size: 1.15rem;
-            max-width: 650px;
-            margin: 0 auto;
-        }
+  .search-input {
+    width: 100%;
+    height: 42px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 0 14px 0 40px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s;
+  }
 
-        .container {
-            max-width: 1600px;
-            margin: 0 auto 3rem;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-            gap: 1.5rem;
-            align-items: start;
-        }
+  .search-input::placeholder { color: var(--text-muted); }
 
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 1.75rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+  .search-input:focus {
+    border-color: var(--cyan);
+    background: rgba(0,212,255,0.05);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+  }
 
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px var(--card-shadow);
-            border-color: rgba(56, 189, 248, 0.4);
-        }
+  .search-kbd {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
 
-        .glass-card h2 {
-            font-size: 1.3rem;
-            margin-top: 0;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 0.75rem;
-            margin-bottom: 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  .header-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
 
-        .badge {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 50px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
+  .stat-pill {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
 
-        .badge.noob { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
-        .badge.mid { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-        .badge.pro { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+  .stat-pill span { color: var(--cyan); font-weight: 600; }
 
-        .command-group {
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
+  /* ──────── HERO ──────── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4rem 2rem 2rem;
+  }
 
-        .code-container {
-            display: flex;
-            align-items: stretch;
-            background: var(--code-bg);
-            border-radius: 6px;
-            border: 1px solid var(--glass-border);
-            margin-bottom: 0.4rem;
-            overflow: hidden;
-        }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--cyan-dim);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.5rem;
+  }
 
-        code {
-            flex-grow: 1;
-            font-family: 'JetBrains Mono', monospace;
-            padding: 0.6rem 0.75rem;
-            color: var(--text-main);
-            font-size: 0.85rem;
-            word-break: break-all;
-            display: flex;
-            align-items: center;
-            white-space: pre-wrap;
-        }
+  .hero-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
 
-        .copy-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: none;
-            border-left: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            padding: 0 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 44px;
-        }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
 
-        .copy-btn:hover {
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--accent);
-        }
+  .hero h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
 
-        .copy-btn.copied {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-        }
+  .hero h2 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--cyan), #7eb8ff, var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-        .desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            padding-left: 0.25rem;
-            line-height: 1.4;
-        }
+  .hero p {
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 500px;
+    line-height: 1.7;
+  }
 
-        .hidden { display: none !important; }
+  /* ──────── FILTER TABS ──────── */
+  .filter-bar {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem 2rem;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
 
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            border-top: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            backdrop-filter: blur(8px);
-        }
-    </style>
+  .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: var(--text-dim);
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+  }
+
+  .filter-btn:hover {
+    background: var(--glass-hover);
+    color: var(--text);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .filter-btn.active {
+    background: var(--cyan-dim);
+    border-color: rgba(0,212,255,0.4);
+    color: var(--cyan);
+  }
+
+  .filter-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ──────── GRID ──────── */
+  .grid {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+  }
+
+  /* ──────── CARD ──────── */
+  .card {
+    background: rgba(13,21,41,0.6);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+
+  .card:hover {
+    border-color: rgba(0,212,255,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(0,212,255,0.05);
+  }
+
+  .card.hidden { display: none; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .card-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+
+  .card-count {
+    margin-left: auto;
+    background: rgba(255,255,255,0.07);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+  }
+
+  .card-body { padding: 4px 0 8px; }
+
+  /* ──────── COMMAND ROW ──────── */
+  .cmd-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    padding: 6px 12px;
+    border-radius: 0;
+    transition: background 0.15s;
+    cursor: default;
+  }
+
+  .cmd-row:hover { background: rgba(255,255,255,0.04); }
+  .cmd-row:hover .copy-btn { opacity: 1; }
+
+  .cmd-row.hidden { display: none; }
+
+  .cmd-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cmd-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--cyan);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+  }
+
+  .cmd-code .kw { color: #ff7eb3; }
+  .cmd-code .flag { color: #ffb830; }
+  .cmd-code .arg { color: #a8d8a8; }
+  .cmd-code .git-cmd { color: #7eb8ff; }
+
+  .cmd-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .copy-btn {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--cyan);
+    font-size: 13px;
+    opacity: 0;
+    transition: all 0.2s;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .copy-btn:hover { background: rgba(0,212,255,0.2); }
+  .copy-btn.copied { background: rgba(0,229,160,0.15); border-color: rgba(0,229,160,0.3); color: var(--green); }
+
+  /* ──────── NO RESULTS ──────── */
+  .no-results {
+    display: none;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 5rem 2rem;
+    color: var(--text-muted);
+  }
+
+  .no-results.visible { display: block; }
+
+  .no-results-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+  .no-results h3 { font-size: 18px; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dim); }
+  .no-results p { font-size: 14px; }
+
+  /* ──────── TOAST ──────── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(0,229,160,0.15);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0,229,160,0.3);
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ──────── SCROLLBAR ──────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+  /* ──────── RESPONSIVE ──────── */
+  @media (max-width: 700px) {
+    .header-stats { display: none; }
+    .hero h2 { font-size: 1.8rem; }
+    .grid { grid-template-columns: 1fr; }
+    .header-inner { gap: 1rem; }
+    .logo-text p { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.04);
+    margin: 4px 12px;
+  }
+</style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="search-container">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" id="searchInput" placeholder="Search commands, aliases, or workflows...">
-        </div>
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">git</div>
+      <div class="logo-text">
+        <h1>Git Cheat Sheet</h1>
+        <p>// all commands reference</p>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="8.5" cy="8.5" r="5.5"/><line x1="13" y1="13" x2="17" y2="17"/></svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="Search commands… (e.g. merge, stash, rebase)" autocomplete="off" spellcheck="false">
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <div class="header-stats">
+      <div class="stat-pill"><span id="visibleCount">150</span> commands</div>
+      <div class="stat-pill"><span>15</span> categories</div>
+    </div>
+  </div>
+</header>
 
-        <button class="theme-toggle" id="themeToggle">
-            <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <span id="themeText">Light</span>
+<div class="hero">
+  <div class="hero-label">git version 2.x · complete reference</div>
+  <h2>Every <em>Git Command</em><br>you'll ever need</h2>
+  <p>A comprehensive glassmorphic reference for Git commands — from basic setup to advanced workflows. Click any command to copy it instantly.</p>
+</div>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-cat="all" onclick="filterCat(this)">
+    <span class="filter-dot" style="background:#00d4ff"></span> All
+  </button>
+</div>
+
+<div class="grid" id="grid">
+  <div class="no-results" id="noResults">
+    <div class="no-results-icon">⌕</div>
+    <h3>No commands found</h3>
+    <p>Try a different search term</p>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Copied to clipboard</div>
+
+<script>
+const DATA = [
+  {
+    cat: "Setup & Config", color: "#00d4ff", icon: "⚙", bg: "rgba(0,212,255,0.12)", commands: [
+      { cmd: "git config --global user.name <kw>\"Your Name\"</kw>", raw: 'git config --global user.name "Your Name"', desc: "Set global username for all repos" },
+      { cmd: "git config --global user.email <kw>\"you@email.com\"</kw>", raw: 'git config --global user.email "you@email.com"', desc: "Set global email address" },
+      { cmd: "git config --global core.editor <arg>vim</arg>", raw: "git config --global core.editor vim", desc: "Set default text editor" },
+      { cmd: "git config --global color.ui <arg>auto</arg>", raw: "git config --global color.ui auto", desc: "Enable colorized output" },
+      { cmd: "git config --list", raw: "git config --list", desc: "List all Git configuration settings" },
+      { cmd: "git config --global alias.st <kw>status</kw>", raw: "git config --global alias.st status", desc: "Create a Git command alias" },
+      { cmd: "git config --global core.autocrlf <arg>true</arg>", raw: "git config --global core.autocrlf true", desc: "Normalize line endings (Windows)" },
+      { cmd: "git config --global init.defaultBranch <arg>main</arg>", raw: "git config --global init.defaultBranch main", desc: "Set default branch name" },
+    ]
+  },
+  {
+    cat: "Initialize & Clone", color: "#7eb8ff", icon: "⊞", bg: "rgba(126,184,255,0.12)", commands: [
+      { cmd: "git init", raw: "git init", desc: "Initialize a new local repository" },
+      { cmd: "git init <arg>&lt;directory&gt;</arg>", raw: "git init <directory>", desc: "Initialize repo in specific folder" },
+      { cmd: "git clone <arg>&lt;url&gt;</arg>", raw: "git clone <url>", desc: "Clone a remote repository locally" },
+      { cmd: "git clone <arg>&lt;url&gt;</arg> <arg>&lt;folder&gt;</arg>", raw: "git clone <url> <folder>", desc: "Clone into a specific folder name" },
+      { cmd: "git clone <flag>--depth</flag> <arg>1</arg> <arg>&lt;url&gt;</arg>", raw: "git clone --depth 1 <url>", desc: "Shallow clone (latest commit only)" },
+      { cmd: "git clone <flag>--branch</flag> <arg>&lt;tag&gt;</arg> <arg>&lt;url&gt;</arg>", raw: "git clone --branch <tag> <url>", desc: "Clone a specific branch or tag" },
+      { cmd: "git clone <flag>--recurse-submodules</flag> <arg>&lt;url&gt;</arg>", raw: "git clone --recurse-submodules <url>", desc: "Clone with all submodules" },
+    ]
+  },
+  {
+    cat: "Staging & Snapshots", color: "#00e5a0", icon: "◎", bg: "rgba(0,229,160,0.1)", commands: [
+      { cmd: "git status", raw: "git status", desc: "Show working tree status" },
+      { cmd: "git status <flag>-s</flag>", raw: "git status -s", desc: "Short format status output" },
+      { cmd: "git add <arg>&lt;file&gt;</arg>", raw: "git add <file>", desc: "Stage a specific file" },
+      { cmd: "git add <arg>.</arg>", raw: "git add .", desc: "Stage all changes in current directory" },
+      { cmd: "git add <flag>-A</flag>", raw: "git add -A", desc: "Stage all changes including deletions" },
+      { cmd: "git add <flag>-p</flag>", raw: "git add -p", desc: "Interactively stage hunks of changes" },
+      { cmd: "git add <flag>-u</flag>", raw: "git add -u", desc: "Stage modified and deleted files only" },
+      { cmd: "git diff", raw: "git diff", desc: "Show unstaged changes" },
+      { cmd: "git diff <flag>--staged</flag>", raw: "git diff --staged", desc: "Show staged changes vs last commit" },
+      { cmd: "git diff <arg>HEAD</arg>", raw: "git diff HEAD", desc: "Show all changes since last commit" },
+      { cmd: "git restore <arg>&lt;file&gt;</arg>", raw: "git restore <file>", desc: "Discard changes in working directory" },
+      { cmd: "git restore <flag>--staged</flag> <arg>&lt;file&gt;</arg>", raw: "git restore --staged <file>", desc: "Unstage a file (keep changes)" },
+    ]
+  },
+  {
+    cat: "Committing", color: "#a78bfa", icon: "✦", bg: "rgba(167,139,250,0.12)", commands: [
+      { cmd: "git commit <flag>-m</flag> <kw>\"message\"</kw>", raw: 'git commit -m "message"', desc: "Commit staged changes with message" },
+      { cmd: "git commit <flag>-am</flag> <kw>\"message\"</kw>", raw: 'git commit -am "message"', desc: "Stage tracked files and commit" },
+      { cmd: "git commit <flag>--amend</flag>", raw: "git commit --amend", desc: "Modify the most recent commit" },
+      { cmd: "git commit <flag>--amend --no-edit</flag>", raw: "git commit --amend --no-edit", desc: "Amend commit, keep same message" },
+      { cmd: "git commit <flag>--allow-empty</flag> <flag>-m</flag> <kw>\"msg\"</kw>", raw: 'git commit --allow-empty -m "msg"', desc: "Create an empty commit" },
+      { cmd: "git commit <flag>--no-verify</flag> <flag>-m</flag> <kw>\"msg\"</kw>", raw: 'git commit --no-verify -m "msg"', desc: "Commit bypassing pre-commit hooks" },
+    ]
+  },
+  {
+    cat: "Branching", color: "#ff8c42", icon: "⑂", bg: "rgba(255,140,66,0.1)", commands: [
+      { cmd: "git branch", raw: "git branch", desc: "List all local branches" },
+      { cmd: "git branch <flag>-a</flag>", raw: "git branch -a", desc: "List all local and remote branches" },
+      { cmd: "git branch <flag>-r</flag>", raw: "git branch -r", desc: "List all remote tracking branches" },
+      { cmd: "git branch <arg>&lt;name&gt;</arg>", raw: "git branch <name>", desc: "Create a new branch" },
+      { cmd: "git branch <flag>-d</flag> <arg>&lt;name&gt;</arg>", raw: "git branch -d <name>", desc: "Delete a fully merged branch" },
+      { cmd: "git branch <flag>-D</flag> <arg>&lt;name&gt;</arg>", raw: "git branch -D <name>", desc: "Force delete a branch" },
+      { cmd: "git branch <flag>-m</flag> <arg>&lt;old&gt;</arg> <arg>&lt;new&gt;</arg>", raw: "git branch -m <old> <new>", desc: "Rename a local branch" },
+      { cmd: "git checkout <arg>&lt;branch&gt;</arg>", raw: "git checkout <branch>", desc: "Switch to an existing branch" },
+      { cmd: "git checkout <flag>-b</flag> <arg>&lt;branch&gt;</arg>", raw: "git checkout -b <branch>", desc: "Create and switch to new branch" },
+      { cmd: "git switch <arg>&lt;branch&gt;</arg>", raw: "git switch <branch>", desc: "Switch to a branch (modern syntax)" },
+      { cmd: "git switch <flag>-c</flag> <arg>&lt;branch&gt;</arg>", raw: "git switch -c <branch>", desc: "Create and switch (modern syntax)" },
+    ]
+  },
+  {
+    cat: "Merging & Rebasing", color: "#ff7eb3", icon: "⊕", bg: "rgba(255,126,179,0.1)", commands: [
+      { cmd: "git merge <arg>&lt;branch&gt;</arg>", raw: "git merge <branch>", desc: "Merge branch into current branch" },
+      { cmd: "git merge <flag>--no-ff</flag> <arg>&lt;branch&gt;</arg>", raw: "git merge --no-ff <branch>", desc: "Merge and always create a merge commit" },
+      { cmd: "git merge <flag>--squash</flag> <arg>&lt;branch&gt;</arg>", raw: "git merge --squash <branch>", desc: "Squash all commits into one" },
+      { cmd: "git merge <flag>--abort</flag>", raw: "git merge --abort", desc: "Abort a merge in progress" },
+      { cmd: "git mergetool", raw: "git mergetool", desc: "Launch a visual merge tool" },
+      { cmd: "git rebase <arg>&lt;branch&gt;</arg>", raw: "git rebase <branch>", desc: "Rebase current branch onto another" },
+      { cmd: "git rebase <flag>-i</flag> <arg>HEAD~3</arg>", raw: "git rebase -i HEAD~3", desc: "Interactive rebase last 3 commits" },
+      { cmd: "git rebase <flag>--continue</flag>", raw: "git rebase --continue", desc: "Continue rebase after resolving" },
+      { cmd: "git rebase <flag>--abort</flag>", raw: "git rebase --abort", desc: "Abort an in-progress rebase" },
+      { cmd: "git rebase <flag>--skip</flag>", raw: "git rebase --skip", desc: "Skip the current rebase patch" },
+    ]
+  },
+  {
+    cat: "Remote Repos", color: "#00d4ff", icon: "☁", bg: "rgba(0,212,255,0.1)", commands: [
+      { cmd: "git remote <flag>-v</flag>", raw: "git remote -v", desc: "List remote connections" },
+      { cmd: "git remote add <arg>origin</arg> <arg>&lt;url&gt;</arg>", raw: "git remote add origin <url>", desc: "Add a remote named origin" },
+      { cmd: "git remote remove <arg>&lt;name&gt;</arg>", raw: "git remote remove <name>", desc: "Remove a remote" },
+      { cmd: "git remote rename <arg>&lt;old&gt;</arg> <arg>&lt;new&gt;</arg>", raw: "git remote rename <old> <new>", desc: "Rename a remote" },
+      { cmd: "git remote set-url <arg>origin</arg> <arg>&lt;url&gt;</arg>", raw: "git remote set-url origin <url>", desc: "Change remote URL" },
+      { cmd: "git fetch <arg>&lt;remote&gt;</arg>", raw: "git fetch <remote>", desc: "Download all changes from remote" },
+      { cmd: "git fetch <flag>--all</flag>", raw: "git fetch --all", desc: "Fetch from all remotes" },
+      { cmd: "git fetch <flag>--prune</flag>", raw: "git fetch --prune", desc: "Fetch and delete stale remote refs" },
+      { cmd: "git pull", raw: "git pull", desc: "Fetch and merge from tracking branch" },
+      { cmd: "git pull <flag>--rebase</flag>", raw: "git pull --rebase", desc: "Fetch and rebase (no merge commit)" },
+      { cmd: "git push <arg>origin</arg> <arg>&lt;branch&gt;</arg>", raw: "git push origin <branch>", desc: "Push branch to remote" },
+      { cmd: "git push <flag>-u</flag> <arg>origin</arg> <arg>&lt;branch&gt;</arg>", raw: "git push -u origin <branch>", desc: "Push and set upstream tracking" },
+      { cmd: "git push <flag>--force</flag>", raw: "git push --force", desc: "Force push (overwrites remote)" },
+      { cmd: "git push <flag>--force-with-lease</flag>", raw: "git push --force-with-lease", desc: "Safe force push (checks for updates)" },
+      { cmd: "git push <arg>origin</arg> <flag>--delete</flag> <arg>&lt;branch&gt;</arg>", raw: "git push origin --delete <branch>", desc: "Delete a remote branch" },
+    ]
+  },
+  {
+    cat: "Log & History", color: "#ffb830", icon: "≡", bg: "rgba(255,184,48,0.1)", commands: [
+      { cmd: "git log", raw: "git log", desc: "Show full commit history" },
+      { cmd: "git log <flag>--oneline</flag>", raw: "git log --oneline", desc: "Compact one-line commit log" },
+      { cmd: "git log <flag>--oneline --graph --all</flag>", raw: "git log --oneline --graph --all", desc: "Visual branch history graph" },
+      { cmd: "git log <flag>--stat</flag>", raw: "git log --stat", desc: "Show files changed in each commit" },
+      { cmd: "git log <flag>-p</flag>", raw: "git log -p", desc: "Show patch diffs for each commit" },
+      { cmd: "git log <flag>--author=</flag><kw>\"name\"</kw>", raw: 'git log --author="name"', desc: "Filter commits by author" },
+      { cmd: "git log <flag>--since=</flag><kw>\"2 weeks ago\"</kw>", raw: 'git log --since="2 weeks ago"', desc: "Show commits since a date" },
+      { cmd: "git log <flag>--grep=</flag><kw>\"keyword\"</kw>", raw: 'git log --grep="keyword"', desc: "Search commit messages" },
+      { cmd: "git log <flag>-S</flag><kw>\"string\"</kw>", raw: 'git log -S"string"', desc: "Find commits that added/removed string" },
+      { cmd: "git log <arg>file.txt</arg>", raw: "git log file.txt", desc: "Show history of a specific file" },
+      { cmd: "git show <arg>&lt;commit&gt;</arg>", raw: "git show <commit>", desc: "Show details of a commit" },
+      { cmd: "git blame <arg>&lt;file&gt;</arg>", raw: "git blame <file>", desc: "Show who changed each line" },
+      { cmd: "git shortlog <flag>-sn</flag>", raw: "git shortlog -sn", desc: "Commit count per author" },
+    ]
+  },
+  {
+    cat: "Stashing", color: "#c084fc", icon: "⊡", bg: "rgba(192,132,252,0.1)", commands: [
+      { cmd: "git stash", raw: "git stash", desc: "Stash uncommitted changes" },
+      { cmd: "git stash push <flag>-m</flag> <kw>\"message\"</kw>", raw: 'git stash push -m "message"', desc: "Stash with a descriptive message" },
+      { cmd: "git stash list", raw: "git stash list", desc: "List all stash entries" },
+      { cmd: "git stash pop", raw: "git stash pop", desc: "Apply and drop the latest stash" },
+      { cmd: "git stash apply <arg>stash@{2}</arg>", raw: "git stash apply stash@{2}", desc: "Apply a specific stash entry" },
+      { cmd: "git stash drop <arg>stash@{0}</arg>", raw: "git stash drop stash@{0}", desc: "Delete a specific stash entry" },
+      { cmd: "git stash clear", raw: "git stash clear", desc: "Delete all stash entries" },
+      { cmd: "git stash branch <arg>&lt;branch&gt;</arg>", raw: "git stash branch <branch>", desc: "Create branch from stash" },
+      { cmd: "git stash show <flag>-p</flag>", raw: "git stash show -p", desc: "Show diff of latest stash" },
+      { cmd: "git stash <flag>--include-untracked</flag>", raw: "git stash --include-untracked", desc: "Stash including untracked files" },
+    ]
+  },
+  {
+    cat: "Undoing Changes", color: "#ff5f7e", icon: "↩", bg: "rgba(255,95,126,0.1)", commands: [
+      { cmd: "git revert <arg>&lt;commit&gt;</arg>", raw: "git revert <commit>", desc: "Create a new commit that undoes changes" },
+      { cmd: "git revert <flag>--no-commit</flag> <arg>&lt;commit&gt;</arg>", raw: "git revert --no-commit <commit>", desc: "Revert changes without committing" },
+      { cmd: "git reset <flag>--soft</flag> <arg>HEAD~1</arg>", raw: "git reset --soft HEAD~1", desc: "Undo commit, keep staged changes" },
+      { cmd: "git reset <flag>--mixed</flag> <arg>HEAD~1</arg>", raw: "git reset --mixed HEAD~1", desc: "Undo commit, keep working dir changes" },
+      { cmd: "git reset <flag>--hard</flag> <arg>HEAD~1</arg>", raw: "git reset --hard HEAD~1", desc: "Undo commit, discard all changes" },
+      { cmd: "git reset <flag>--hard</flag> <arg>origin/main</arg>", raw: "git reset --hard origin/main", desc: "Reset to match remote branch" },
+      { cmd: "git clean <flag>-fd</flag>", raw: "git clean -fd", desc: "Remove untracked files & directories" },
+      { cmd: "git clean <flag>-fdx</flag>", raw: "git clean -fdx", desc: "Remove untracked + gitignored files" },
+      { cmd: "git clean <flag>-n</flag>", raw: "git clean -n", desc: "Dry run: show what would be deleted" },
+    ]
+  },
+  {
+    cat: "Tags", color: "#34d399", icon: "◈", bg: "rgba(52,211,153,0.1)", commands: [
+      { cmd: "git tag", raw: "git tag", desc: "List all tags" },
+      { cmd: "git tag <arg>&lt;name&gt;</arg>", raw: "git tag <name>", desc: "Create a lightweight tag" },
+      { cmd: "git tag <flag>-a</flag> <arg>&lt;name&gt;</arg> <flag>-m</flag> <kw>\"msg\"</kw>", raw: 'git tag -a <name> -m "msg"', desc: "Create an annotated tag" },
+      { cmd: "git tag <flag>-a</flag> <arg>&lt;name&gt;</arg> <arg>&lt;commit&gt;</arg>", raw: "git tag -a <name> <commit>", desc: "Tag a specific commit" },
+      { cmd: "git tag <flag>-d</flag> <arg>&lt;name&gt;</arg>", raw: "git tag -d <name>", desc: "Delete a local tag" },
+      { cmd: "git push <arg>origin</arg> <arg>&lt;tag&gt;</arg>", raw: "git push origin <tag>", desc: "Push a tag to remote" },
+      { cmd: "git push <arg>origin</arg> <flag>--tags</flag>", raw: "git push origin --tags", desc: "Push all tags to remote" },
+      { cmd: "git push <arg>origin</arg> <flag>--delete</flag> <arg>&lt;tag&gt;</arg>", raw: "git push origin --delete <tag>", desc: "Delete a remote tag" },
+      { cmd: "git checkout <arg>&lt;tag&gt;</arg>", raw: "git checkout <tag>", desc: "Check out a tag (detached HEAD)" },
+    ]
+  },
+  {
+    cat: "Cherry-pick & Patches", color: "#f472b6", icon: "⌥", bg: "rgba(244,114,182,0.1)", commands: [
+      { cmd: "git cherry-pick <arg>&lt;commit&gt;</arg>", raw: "git cherry-pick <commit>", desc: "Apply a commit from another branch" },
+      { cmd: "git cherry-pick <arg>&lt;hash1&gt;</arg>..<arg>&lt;hash2&gt;</arg>", raw: "git cherry-pick <hash1>..<hash2>", desc: "Apply a range of commits" },
+      { cmd: "git cherry-pick <flag>--no-commit</flag> <arg>&lt;commit&gt;</arg>", raw: "git cherry-pick --no-commit <commit>", desc: "Apply changes without committing" },
+      { cmd: "git cherry-pick <flag>--abort</flag>", raw: "git cherry-pick --abort", desc: "Abort cherry-pick operation" },
+      { cmd: "git format-patch <flag>-1</flag> <arg>&lt;commit&gt;</arg>", raw: "git format-patch -1 <commit>", desc: "Create a patch file from commit" },
+      { cmd: "git apply <arg>&lt;patch&gt;</arg>", raw: "git apply <patch>", desc: "Apply a patch file" },
+      { cmd: "git am <arg>&lt;patch.mbox&gt;</arg>", raw: "git am <patch.mbox>", desc: "Apply mailbox format patch" },
+    ]
+  },
+  {
+    cat: "Submodules", color: "#60a5fa", icon: "⊆", bg: "rgba(96,165,250,0.1)", commands: [
+      { cmd: "git submodule add <arg>&lt;url&gt;</arg>", raw: "git submodule add <url>", desc: "Add a submodule to your repo" },
+      { cmd: "git submodule init", raw: "git submodule init", desc: "Initialize submodule config" },
+      { cmd: "git submodule update", raw: "git submodule update", desc: "Fetch and checkout submodules" },
+      { cmd: "git submodule update <flag>--init --recursive</flag>", raw: "git submodule update --init --recursive", desc: "Init and update all submodules" },
+      { cmd: "git submodule foreach <kw>git pull</kw>", raw: "git submodule foreach git pull", desc: "Pull all submodules" },
+      { cmd: "git submodule status", raw: "git submodule status", desc: "Show current submodule state" },
+      { cmd: "git submodule deinit <arg>&lt;path&gt;</arg>", raw: "git submodule deinit <path>", desc: "Unregister a submodule" },
+    ]
+  },
+  {
+    cat: "Search & Inspect", color: "#a3e635", icon: "⌕", bg: "rgba(163,230,53,0.1)", commands: [
+      { cmd: "git grep <kw>\"pattern\"</kw>", raw: 'git grep "pattern"', desc: "Search working tree for pattern" },
+      { cmd: "git grep <flag>-n</flag> <kw>\"pattern\"</kw>", raw: 'git grep -n "pattern"', desc: "Search with line numbers" },
+      { cmd: "git grep <kw>\"pattern\"</kw> <flag>--</flag> <arg>*.js</arg>", raw: 'git grep "pattern" -- *.js', desc: "Search only in JS files" },
+      { cmd: "git bisect start", raw: "git bisect start", desc: "Start a binary search for a bug" },
+      { cmd: "git bisect good <arg>&lt;commit&gt;</arg>", raw: "git bisect good <commit>", desc: "Mark commit as good" },
+      { cmd: "git bisect bad <arg>&lt;commit&gt;</arg>", raw: "git bisect bad <commit>", desc: "Mark commit as bad" },
+      { cmd: "git bisect reset", raw: "git bisect reset", desc: "End bisect and return to HEAD" },
+      { cmd: "git reflog", raw: "git reflog", desc: "Show all local ref changes" },
+      { cmd: "git reflog expire <flag>--all</flag>", raw: "git reflog expire --all", desc: "Expire all reflog entries" },
+    ]
+  },
+  {
+    cat: "Worktree & Advanced", color: "#e879f9", icon: "⊞", bg: "rgba(232,121,249,0.1)", commands: [
+      { cmd: "git worktree add <arg>&lt;path&gt;</arg> <arg>&lt;branch&gt;</arg>", raw: "git worktree add <path> <branch>", desc: "Checkout branch in new directory" },
+      { cmd: "git worktree list", raw: "git worktree list", desc: "List all linked worktrees" },
+      { cmd: "git worktree remove <arg>&lt;path&gt;</arg>", raw: "git worktree remove <path>", desc: "Remove a worktree" },
+      { cmd: "git archive <flag>--format=zip HEAD</flag>", raw: "git archive --format=zip HEAD", desc: "Export repo as zip archive" },
+      { cmd: "git gc", raw: "git gc", desc: "Run garbage collection" },
+      { cmd: "git gc <flag>--aggressive</flag>", raw: "git gc --aggressive", desc: "Aggressive garbage collection" },
+      { cmd: "git fsck", raw: "git fsck", desc: "Verify integrity of objects" },
+      { cmd: "git count-objects <flag>-vH</flag>", raw: "git count-objects -vH", desc: "Show repo size info" },
+      { cmd: "git notes add <flag>-m</flag> <kw>\"note\"</kw>", raw: 'git notes add -m "note"', desc: "Add note to a commit" },
+      { cmd: "git rerere", raw: "git rerere", desc: "Reuse recorded conflict resolutions" },
+    ]
+  },
+];
+
+let activeFilter = 'all';
+let totalCmds = 0;
+
+function buildCards() {
+  const filterBar = document.getElementById('filterBar');
+  const grid = document.getElementById('grid');
+  const noResults = document.getElementById('noResults');
+
+  DATA.forEach(cat => {
+    totalCmds += cat.commands.length;
+
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.cat = cat.cat;
+    btn.onclick = function() { filterCat(this); };
+    btn.innerHTML = `<span class="filter-dot" style="background:${cat.color}"></span> ${cat.cat}`;
+    filterBar.appendChild(btn);
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.cat = cat.cat;
+
+    let cmdRows = cat.commands.map(c => `
+      <div class="cmd-row" data-raw="${c.raw.replace(/"/g,'&quot;')}" data-desc="${c.desc}">
+        <div class="cmd-left">
+          <div class="cmd-code">${c.cmd}</div>
+          <div class="cmd-desc">${c.desc}</div>
+        </div>
+        <button class="copy-btn" onclick="copyCmd(this)" title="Copy command" aria-label="Copy command">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>
         </button>
-    </div>
+      </div>
+    `).join('<div class="divider"></div>');
 
-    <header>
-        <h1>Git & GitHub Architect Hub</h1>
-        <p>The exhaustive tracking protocol reference. From initial configuration to rewriting history trees.</p>
-    </header>
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-icon" style="background:${cat.bg}; color:${cat.color}">${cat.icon}</div>
+        <div class="card-title">${cat.cat}</div>
+        <div class="card-count">${cat.commands.length}</div>
+      </div>
+      <div class="card-body">${cmdRows}</div>
+    `;
 
-    <div class="container" id="cardsContainer">
-        
-        <div class="glass-card">
-            <h2><span style="color: var(--accent);">Pro Aliases (Shortcuts)</span> <span class="badge pro">Pro</span></h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git config --global alias.co checkout<br>git config --global alias.br branch<br>git config --global alias.ci commit<br>git config --global alias.st status</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Sets up massive keystroke savers. You can now just type <code>git st</code> or <code>git co</code>.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git config --global alias.unstage 'reset HEAD --'</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Creates <code>git unstage [file]</code> to quickly remove a file from the current commit queue.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">The ultimate visual tree shortcut. Type <code>git lg</code> to see a beautiful visual history map.</div>
-            </div>
-        </div>
+    grid.insertBefore(card, noResults);
+  });
 
-        <div class="glass-card">
-            <h2><span style="color: var(--accent);">Stage & Snapshot</span> <span class="badge noob">Noob</span></h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git add .</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Stages all current changes. The most commonly used command.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git add -p</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc"><strong>(Pro Shortcut)</strong> Interactive patch mode. Lets you review and stage specific chunks of a file instead of the whole thing.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git commit -m "Refactor to POJO-based architecture"</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Records file snapshots permanently in version history.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git commit --amend --no-edit</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Adds staged files to the last commit without changing its message. A massive lifesaver.</div>
-            </div>
-        </div>
+  document.getElementById('visibleCount').textContent = totalCmds;
+}
 
-        <div class="glass-card">
-            <h2><span style="color: var(--accent);">Branch & Merge</span> <span class="badge mid">Mid</span></h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git switch -c feature/flutter-glass-ui</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">The modern, safer alternative to <code>checkout -b</code>. Creates and switches to a new branch.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git branch -D [branch-name]</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Force deletes a branch even if it has unmerged changes. Use with caution.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git merge [branch] --squash</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Takes all commits from the target branch and puts them into a single, clean commit on your current branch.</div>
-            </div>
-        </div>
+function copyCmd(btn) {
+  const row = btn.closest('.cmd-row');
+  const text = row.dataset.raw;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="2 8 6 12 14 4"/></svg>`;
+    showToast(`Copied: ${text.length > 40 ? text.slice(0,40)+'…' : text}`);
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>`;
+    }, 1800);
+  });
+}
 
-        <div class="glass-card">
-            <h2><span style="color: var(--accent);">Rebase & Cherry-Pick</span> <span class="badge pro">Pro</span></h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git pull --rebase origin main</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Fetches remote changes and rebases your local commits on top. Keeps history perfectly linear.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git rebase -i HEAD~4</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Interactive mode. Allows you to squash, rename, drop, or reorder your last 4 commits.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git cherry-pick [commit-hash] -n</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Pulls a specific commit from anywhere, but the <code>-n</code> (no-commit) flag stages it so you can edit before committing.</div>
-            </div>
-        </div>
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '✓ ' + msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
 
-        <div class="glass-card">
-            <h2><span style="color: var(--accent);">Stash & Worktrees</span> <span class="badge pro">Pro</span></h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git stash push -m "WIP offline-first SQLite schema"</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Temporarily stores modified files with a descriptive label so you don't lose track of it in <code>git stash list</code>.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git worktree add ../dev-club-projects main</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">The ultimate architect trick. Checks out a branch in a totally separate physical folder so you can work on two branches simultaneously without stashing.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git worktree remove ../dev-club-projects</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Safely cleans up the linked worktree directory.</div>
-            </div>
-        </div>
+function filterCat(btn) {
+  activeFilter = btn.dataset.cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
 
-        <div class="glass-card">
-            <h2><span style="color: var(--accent);">Undo & Data Recovery</span> <span class="badge pro">Pro</span></h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git reset --soft HEAD~1</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Undoes the last commit, but keeps all the file changes staged and ready.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git reset --hard origin/main</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Destructive! Completely forces your local branch to perfectly match the remote branch, discarding local changes.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git reflog</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">The ultimate safety net. Logs every time HEAD moves. Use this to recover "deleted" commits or branches.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git clean -fd</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Forcefully deletes untracked files and directories from your workspace.</div>
-            </div>
-        </div>
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  let visible = 0;
 
-        <div class="glass-card">
-            <h2><span style="color: var(--accent);">Debug & Inspect</span> <span class="badge mid">Mid</span></h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git bisect start<br>git bisect bad<br>git bisect good [working-hash]</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Automates finding a bug. It uses binary search to pinpoint exactly which commit broke the code.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git diff --staged</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Shows what you are about to commit (differences between index and last commit).</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>git blame [file]</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Shows who modified each line of a file, in which commit, and when.</div>
-            </div>
-        </div>
+  document.querySelectorAll('.card').forEach(card => {
+    const catMatch = activeFilter === 'all' || card.dataset.cat === activeFilter;
+    if (!catMatch) { card.classList.add('hidden'); return; }
 
-        <div class="glass-card">
-            <h2><span style="color: var(--accent);">GitHub CLI (`gh`)</span> <span class="badge mid">Mid</span></h2>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>gh repo create PrivLedger --public --clone</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Creates a new public repo directly on GitHub and clones it locally in one step.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>gh pr create --fill</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Instantly opens a Pull Request using the current branch and commit messages for the PR details.</div>
-            </div>
-            <div class="command-group">
-                <div class="code-container">
-                    <code>gh repo view --web</code>
-                    <button class="copy-btn" title="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-                <div class="desc">Opens the current repository in your default web browser.</div>
-            </div>
-        </div>
+    if (!q) {
+      card.classList.remove('hidden');
+      card.querySelectorAll('.cmd-row').forEach(r => r.classList.remove('hidden'));
+      visible += card.querySelectorAll('.cmd-row').length;
+      return;
+    }
 
-    </div>
+    let anyVisible = false;
+    card.querySelectorAll('.cmd-row').forEach(row => {
+      const raw = (row.dataset.raw || '').toLowerCase();
+      const desc = (row.dataset.desc || '').toLowerCase();
+      const catName = (card.dataset.cat || '').toLowerCase();
+      if (raw.includes(q) || desc.includes(q) || catName.includes(q)) {
+        row.classList.remove('hidden');
+        anyVisible = true;
+        visible++;
+      } else {
+        row.classList.add('hidden');
+      }
+    });
 
-    <footer>
-        <p>Built for efficiency. Copy with a click. Search instantly.</p>
-    </footer>
+    if (anyVisible) card.classList.remove('hidden');
+    else card.classList.add('hidden');
+  });
 
-    <script>
-        // 1. Theme Toggle Logic
-        const themeToggle = document.getElementById('themeToggle');
-        const themeText = document.getElementById('themeText');
-        const themeIcon = document.getElementById('themeIcon');
-        
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        if (currentTheme === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-            updateToggleUI('light');
-        }
+  document.getElementById('visibleCount').textContent = visible;
+  const nr = document.getElementById('noResults');
+  nr.classList.toggle('visible', visible === 0);
+}
 
-        themeToggle.addEventListener('click', () => {
-            let targetTheme = 'dark';
-            if (document.documentElement.getAttribute('data-theme') !== 'light') {
-                targetTheme = 'light';
-            }
-            
-            if (targetTheme === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-                updateToggleUI('light');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'dark');
-                updateToggleUI('dark');
-            }
-        });
+document.getElementById('searchInput').addEventListener('input', applyFilters);
 
-        function updateToggleUI(theme) {
-            if (theme === 'light') {
-                themeText.textContent = 'Dark';
-                themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
-            } else {
-                themeText.textContent = 'Light';
-                themeIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
-            }
-        }
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('searchInput').value = '';
+    applyFilters();
+    document.getElementById('searchInput').blur();
+  }
+});
 
-        // 2. Copy to Clipboard Logic
-        const copyButtons = document.querySelectorAll('.copy-btn');
-        const copyIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
-        const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-
-        copyButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const codeElement = btn.previousElementSibling;
-                // Use innerText and replace multiple spaces/newlines to handle HTML <br> tags cleanly
-                const textToCopy = codeElement.innerText.replace(/\n\s*\n/g, '\n');
-
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    btn.innerHTML = checkIcon;
-                    btn.classList.add('copied');
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = copyIcon;
-                        btn.classList.remove('copied');
-                    }, 2000);
-                });
-            });
-        });
-
-        // 3. Live Search Filter Logic
-        const searchInput = document.getElementById('searchInput');
-        const commandGroups = document.querySelectorAll('.command-group');
-        const cards = document.querySelectorAll('.glass-card');
-
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-
-            commandGroups.forEach(group => {
-                const text = group.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
-                    group.classList.remove('hidden');
-                } else {
-                    group.classList.add('hidden');
-                }
-            });
-
-            // Hide entirely empty cards
-            cards.forEach(card => {
-                const visibleCommands = card.querySelectorAll('.command-group:not(.hidden)');
-                if (visibleCommands.length === 0) {
-                    card.style.display = 'none';
-                } else {
-                    card.style.display = 'block';
-                }
-            });
-        });
-    </script>
+buildCards();
+</script>
 </body>
 </html>
-
