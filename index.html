@@ -1,1 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Git & GitHub Cheat Sheet</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400&display=swap');
 
+        :root {
+            --bg-slate: #0f172a;
+            --bg-slate-light: #1e293b;
+            --accent-blue: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-slate), var(--bg-slate-light));
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .glass-card h2 {
+            color: var(--accent-blue);
+            font-size: 1.25rem;
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .command-group {
+            margin-bottom: 1.25rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 0.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ultimate Git & GitHub Hub</h1>
+        <p>The exhaustive command reference for modern version control.</p>
+    </header>
+
+    <div class="container">
+        <div class="glass-card">
+            <h2>Setup & Init</h2>
+            <div class="command-group">
+                <code>git config --global user.name "[name]"</code>
+                <div class="desc">Sets the name attached to your commits.</div>
+                
+                <code>git config --global user.email "[email]"</code>
+                <div class="desc">Sets the email attached to your commits.</div>
+
+                <code>git init [project-name]</code>
+                <div class="desc">Creates a new local repository.</div>
+
+                <code>git clone [url]</code>
+                <div class="desc">Downloads a project and its entire version history.</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Stage & Snapshot</h2>
+            <div class="command-group">
+                <code>git status</code>
+                <div class="desc">Lists all new or modified files to be committed.</div>
+
+                <code>git add [file]</code>
+                <div class="desc">Snapshots the file in preparation for versioning.</div>
+
+                <code>git add .</code>
+                <div class="desc">Stages all current changes in the directory.</div>
+
+                <code>git commit -m "[message]"</code>
+                <div class="desc">Records file snapshots permanently in version history.</div>
+
+                <code>git commit -am "[message]"</code>
+                <div class="desc">Stages all modified files and commits them in one step.</div>
+
+                <code>git commit --amend</code>
+                <div class="desc">Modify the last commit (change message or add forgotten files).</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Branch & Merge</h2>
+            <div class="command-group">
+                <code>git branch</code>
+                <div class="desc">Lists all local branches in the current repository.</div>
+
+                <code>git branch [branch-name]</code>
+                <div class="desc">Creates a new branch.</div>
+
+                <code>git checkout [branch-name]</code>
+                <div class="desc">Switches to the specified branch.</div>
+
+                <code>git checkout -b [branch-name]</code>
+                <div class="desc">Creates a new branch and switches to it immediately.</div>
+
+                <code>git merge [branch]</code>
+                <div class="desc">Combines the specified branch's history into the current branch.</div>
+
+                <code>git branch -d [branch-name]</code>
+                <div class="desc">Deletes the specified branch safely.</div>
+
+                <code>git rebase [branch]</code>
+                <div class="desc">Applies any commits of current branch ahead of specified one.</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Share & Update (Remotes)</h2>
+            <div class="command-group">
+                <code>git remote add origin [url]</code>
+                <div class="desc">Connects your local repo to a remote server.</div>
+
+                <code>git remote -v</code>
+                <div class="desc">Shows the URLs of remote repositories.</div>
+
+                <code>git fetch</code>
+                <div class="desc">Downloads all history from the remote tracking branches.</div>
+
+                <code>git pull</code>
+                <div class="desc">Fetches and merges changes on the remote server to your working directory.</div>
+
+                <code>git push origin [branch]</code>
+                <div class="desc">Uploads all local branch commits to GitHub.</div>
+
+                <code>git push -u origin [branch]</code>
+                <div class="desc">Pushes and sets upstream tracking for future pulls.</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Inspect & Compare</h2>
+            <div class="command-group">
+                <code>git log</code>
+                <div class="desc">Lists version history for the current branch.</div>
+
+                <code>git log --oneline --graph</code>
+                <div class="desc">Shows a compact, visual representation of the commit history.</div>
+
+                <code>git diff</code>
+                <div class="desc">Shows file differences not yet staged.</div>
+
+                <code>git diff --staged</code>
+                <div class="desc">Shows file differences between staging and the last file version.</div>
+
+                <code>git show [commit]</code>
+                <div class="desc">Outputs metadata and content changes of the specified commit.</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Temporary Storage (Stash)</h2>
+            <div class="command-group">
+                <code>git stash</code>
+                <div class="desc">Temporarily stores all modified tracked files.</div>
+
+                <code>git stash pop</code>
+                <div class="desc">Restores the most recently stashed files and removes them from the stash list.</div>
+
+                <code>git stash list</code>
+                <div class="desc">Lists all stashed changesets.</div>
+
+                <code>git stash drop</code>
+                <div class="desc">Discards the most recently stashed changeset.</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>Undoing Changes</h2>
+            <div class="command-group">
+                <code>git reset [file]</code>
+                <div class="desc">Unstages the file, but preserves its contents.</div>
+
+                <code>git reset --hard [commit]</code>
+                <div class="desc">Discards all history and changes back to the specified commit. WARNING: Destructive.</div>
+
+                <code>git revert [commit]</code>
+                <div class="desc">Creates a new commit that undoes all of the changes made in a specific commit.</div>
+
+                <code>git clean -fd</code>
+                <div class="desc">Removes untracked files and directories from your working tree.</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>GitHub CLI (gh) Exclusives</h2>
+            <div class="command-group">
+                <code>gh auth login</code>
+                <div class="desc">Authenticate with your GitHub account.</div>
+
+                <code>gh repo create</code>
+                <div class="desc">Create a new GitHub repository from the command line.</div>
+
+                <code>gh repo clone [owner]/[repo]</code>
+                <div class="desc">Clone a repository to your local machine.</div>
+
+                <code>gh pr create</code>
+                <div class="desc">Create a pull request directly from the terminal.</div>
+
+                <code>gh pr list</code>
+                <div class="desc">View open pull requests for the repository.</div>
+
+                <code>gh issue create</code>
+                <div class="desc">Create a new issue on GitHub.</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built for developers, by developers. Designed with clean code and glassmorphism.</p>
+    </footer>
+
+</body>
+</html>
