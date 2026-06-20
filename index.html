@@ -3,102 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Git & GitHub Cheat Sheet</title>
+    <title>Advanced Git & GitHub Cheat Sheet</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400&display=swap');
 
+        /* Default Dark Mode (Slate) */
         :root {
-            --bg-slate: #0f172a;
-            --bg-slate-light: #1e293b;
-            --accent-blue: #38bdf8;
+            --bg-grad-start: #0f172a;
+            --bg-grad-end: #1e293b;
+            --accent: #38bdf8;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --code-bg: rgba(0, 0, 0, 0.4);
+            --card-shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Light Mode Variables */
+        [data-theme="light"] {
+            --bg-grad-start: #e2e8f0;
+            --bg-grad-end: #f8fafc;
+            --accent: #0284c7;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --code-bg: rgba(15, 23, 42, 0.08);
+            --card-shadow: rgba(0, 0, 0, 0.05);
         }
 
         body {
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-slate), var(--bg-slate-light));
+            background: linear-gradient(135deg, var(--bg-grad-start), var(--bg-grad-end));
             background-attachment: fixed;
             color: var(--text-main);
             line-height: 1.6;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            transition: transform 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
         }
 
         header {
             text-align: center;
-            padding: 4rem 1rem;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 5rem 1rem 3rem;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 0.5rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, var(--text-main), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 1.5rem;
+            align-items: start; /* Prevents cards from stretching vertically */
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--glass-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
             border-radius: 16px;
-            padding: 1.5rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 1.75rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
         }
 
         .glass-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 15px 35px var(--card-shadow);
+            border-color: rgba(56, 189, 248, 0.4);
         }
 
         .glass-card h2 {
-            color: var(--accent-blue);
-            font-size: 1.25rem;
+            color: var(--accent);
+            font-size: 1.3rem;
             margin-top: 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--glass-border);
             padding-bottom: 0.75rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
         }
 
         .command-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .command-group:last-child {
+            margin-bottom: 0;
         }
 
         code {
             font-family: 'JetBrains Mono', monospace;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 0.25rem 0.5rem;
+            background: var(--code-bg);
+            padding: 0.35rem 0.6rem;
             border-radius: 6px;
-            color: #e2e8f0;
+            color: var(--text-main);
             font-size: 0.85rem;
             display: block;
-            margin-bottom: 0.25rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 0.35rem;
+            border: 1px solid var(--glass-border);
+            word-wrap: break-word;
         }
 
         .desc {
             font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.25rem;
         }
 
         footer {
@@ -106,36 +162,55 @@
             padding: 2rem;
             color: var(--text-muted);
             font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: 3rem;
+            border-top: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
         }
     </style>
 </head>
 <body>
 
+    <button class="theme-toggle" id="themeToggle">
+        <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Default to Sun icon for switching to light mode -->
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <span id="themeText">Light Mode</span>
+    </button>
+
     <header>
-        <h1>Ultimate Git & GitHub Hub</h1>
-        <p>The exhaustive command reference for modern version control.</p>
+        <h1>Git & GitHub Architect Hub</h1>
+        <p>The definitive tracking protocol reference. From basic versioning to advanced tree rewriting.</p>
     </header>
 
     <div class="container">
+        <!-- SETUP & CONFIGURATION -->
         <div class="glass-card">
             <h2>Setup & Init</h2>
             <div class="command-group">
                 <code>git config --global user.name "[name]"</code>
-                <div class="desc">Sets the name attached to your commits.</div>
+                <div class="desc">Sets the global name attached to your commits.</div>
                 
                 <code>git config --global user.email "[email]"</code>
-                <div class="desc">Sets the email attached to your commits.</div>
+                <div class="desc">Sets the global email attached to your commits.</div>
 
-                <code>git init [project-name]</code>
-                <div class="desc">Creates a new local repository.</div>
+                <code>git init</code>
+                <div class="desc">Initializes a new local repository in the current directory.</div>
 
                 <code>git clone [url]</code>
                 <div class="desc">Downloads a project and its entire version history.</div>
             </div>
         </div>
 
+        <!-- STAGE & SNAPSHOT -->
         <div class="glass-card">
             <h2>Stage & Snapshot</h2>
             <div class="command-group">
@@ -151,144 +226,197 @@
                 <code>git commit -m "[message]"</code>
                 <div class="desc">Records file snapshots permanently in version history.</div>
 
-                <code>git commit -am "[message]"</code>
-                <div class="desc">Stages all modified files and commits them in one step.</div>
-
-                <code>git commit --amend</code>
-                <div class="desc">Modify the last commit (change message or add forgotten files).</div>
+                <code>git commit --amend -m "[new message]"</code>
+                <div class="desc">Modifies the last commit message or adds forgotten files to it.</div>
             </div>
         </div>
 
+        <!-- BRANCH & MERGE -->
         <div class="glass-card">
             <h2>Branch & Merge</h2>
             <div class="command-group">
-                <code>git branch</code>
-                <div class="desc">Lists all local branches in the current repository.</div>
-
-                <code>git branch [branch-name]</code>
-                <div class="desc">Creates a new branch.</div>
-
-                <code>git checkout [branch-name]</code>
-                <div class="desc">Switches to the specified branch.</div>
+                <code>git branch -a</code>
+                <div class="desc">Lists all local and remote branches.</div>
 
                 <code>git checkout -b [branch-name]</code>
                 <div class="desc">Creates a new branch and switches to it immediately.</div>
+
+                <code>git switch [branch-name]</code>
+                <div class="desc">Modern command to switch between branches.</div>
 
                 <code>git merge [branch]</code>
                 <div class="desc">Combines the specified branch's history into the current branch.</div>
 
                 <code>git branch -d [branch-name]</code>
-                <div class="desc">Deletes the specified branch safely.</div>
-
-                <code>git rebase [branch]</code>
-                <div class="desc">Applies any commits of current branch ahead of specified one.</div>
+                <div class="desc">Deletes the specified branch safely (prevents deleting unmerged changes).</div>
             </div>
         </div>
 
+        <!-- ADVANCED HISTORY SHAPING -->
+        <div class="glass-card">
+            <h2>Advanced History Shaping</h2>
+            <div class="command-group">
+                <code>git rebase [branch]</code>
+                <div class="desc">Applies any commits of current branch ahead of specified one. Keeps history linear.</div>
+
+                <code>git rebase -i HEAD~[n]</code>
+                <div class="desc">Interactive rebase for the last <em>n</em> commits. Used to squash, edit, or reorder commits.</div>
+
+                <code>git cherry-pick [commit-hash]</code>
+                <div class="desc">Takes a specific commit from another branch and applies it to the current branch.</div>
+            </div>
+        </div>
+
+        <!-- SHARE & UPDATE -->
         <div class="glass-card">
             <h2>Share & Update (Remotes)</h2>
             <div class="command-group">
                 <code>git remote add origin [url]</code>
                 <div class="desc">Connects your local repo to a remote server.</div>
 
-                <code>git remote -v</code>
-                <div class="desc">Shows the URLs of remote repositories.</div>
-
                 <code>git fetch</code>
-                <div class="desc">Downloads all history from the remote tracking branches.</div>
+                <div class="desc">Downloads history from remote tracking branches without merging them.</div>
 
-                <code>git pull</code>
-                <div class="desc">Fetches and merges changes on the remote server to your working directory.</div>
-
-                <code>git push origin [branch]</code>
-                <div class="desc">Uploads all local branch commits to GitHub.</div>
+                <code>git pull --rebase</code>
+                <div class="desc">Fetches and merges changes, but puts your local commits on top of the remote ones.</div>
 
                 <code>git push -u origin [branch]</code>
-                <div class="desc">Pushes and sets upstream tracking for future pulls.</div>
+                <div class="desc">Uploads local branch commits and sets upstream tracking.</div>
             </div>
         </div>
 
+        <!-- INSPECT & COMPARE -->
         <div class="glass-card">
-            <h2>Inspect & Compare</h2>
+            <h2>Inspect & Debug</h2>
             <div class="command-group">
-                <code>git log</code>
-                <div class="desc">Lists version history for the current branch.</div>
+                <code>git log --oneline --graph --all</code>
+                <div class="desc">Shows a highly readable, graphical tree view of all branches.</div>
 
-                <code>git log --oneline --graph</code>
-                <div class="desc">Shows a compact, visual representation of the commit history.</div>
+                <code>git diff [branch1]..[branch2]</code>
+                <div class="desc">Shows the content differences between two branches.</div>
 
-                <code>git diff</code>
-                <div class="desc">Shows file differences not yet staged.</div>
+                <code>git blame [file]</code>
+                <div class="desc">Shows who changed what line in a file and in which commit.</div>
 
-                <code>git diff --staged</code>
-                <div class="desc">Shows file differences between staging and the last file version.</div>
-
-                <code>git show [commit]</code>
-                <div class="desc">Outputs metadata and content changes of the specified commit.</div>
+                <code>git reflog</code>
+                <div class="desc">Logs all branch updates and HEAD movements. The ultimate undo safety net.</div>
             </div>
         </div>
 
+        <!-- STASH MANAGEMENT -->
         <div class="glass-card">
-            <h2>Temporary Storage (Stash)</h2>
+            <h2>Stash Management</h2>
             <div class="command-group">
-                <code>git stash</code>
-                <div class="desc">Temporarily stores all modified tracked files.</div>
+                <code>git stash push -m "message"</code>
+                <div class="desc">Temporarily stores modified files with a descriptive label.</div>
 
                 <code>git stash pop</code>
                 <div class="desc">Restores the most recently stashed files and removes them from the stash list.</div>
 
-                <code>git stash list</code>
-                <div class="desc">Lists all stashed changesets.</div>
-
-                <code>git stash drop</code>
-                <div class="desc">Discards the most recently stashed changeset.</div>
+                <code>git stash apply stash@{n}</code>
+                <div class="desc">Applies a specific stash from the list without deleting it.</div>
             </div>
         </div>
 
+        <!-- TAGS & SUBMODULES -->
         <div class="glass-card">
-            <h2>Undoing Changes</h2>
+            <h2>Tags & Submodules</h2>
+            <div class="command-group">
+                <code>git tag -a v1.0.0 -m "Release 1.0.0"</code>
+                <div class="desc">Creates an annotated tag for a specific release point.</div>
+
+                <code>git push origin --tags</code>
+                <div class="desc">Pushes all local tags to the remote repository.</div>
+
+                <code>git submodule add [url]</code>
+                <div class="desc">Embeds another Git repository inside your current repository.</div>
+                
+                <code>git submodule update --init --recursive</code>
+                <div class="desc">Initializes and clones submodules recursively.</div>
+            </div>
+        </div>
+
+        <!-- UNDOING & CLEANING -->
+        <div class="glass-card">
+            <h2>Undoing & Cleaning</h2>
             <div class="command-group">
                 <code>git reset [file]</code>
-                <div class="desc">Unstages the file, but preserves its contents.</div>
+                <div class="desc">Unstages the file, but preserves its contents in the working directory.</div>
 
-                <code>git reset --hard [commit]</code>
-                <div class="desc">Discards all history and changes back to the specified commit. WARNING: Destructive.</div>
+                <code>git reset --hard HEAD</code>
+                <div class="desc">Discards all local changes in tracked files and reverts to the last commit.</div>
 
-                <code>git revert [commit]</code>
-                <div class="desc">Creates a new commit that undoes all of the changes made in a specific commit.</div>
+                <code>git revert [commit-hash]</code>
+                <div class="desc">Creates a new commit that safely undoes changes from a past commit.</div>
 
                 <code>git clean -fd</code>
-                <div class="desc">Removes untracked files and directories from your working tree.</div>
+                <div class="desc">Force deletes untracked files and directories.</div>
             </div>
         </div>
 
+        <!-- GITHUB CLI (gh) EXCLUSIVES -->
         <div class="glass-card">
-            <h2>GitHub CLI (gh) Exclusives</h2>
+            <h2>GitHub CLI (`gh`)</h2>
             <div class="command-group">
                 <code>gh auth login</code>
-                <div class="desc">Authenticate with your GitHub account.</div>
+                <div class="desc">Authenticate with your GitHub account via terminal.</div>
 
-                <code>gh repo create</code>
-                <div class="desc">Create a new GitHub repository from the command line.</div>
+                <code>gh repo create [name] --public --clone</code>
+                <div class="desc">Creates a new public repo on GitHub and clones it locally instantly.</div>
 
-                <code>gh repo clone [owner]/[repo]</code>
-                <div class="desc">Clone a repository to your local machine.</div>
-
-                <code>gh pr create</code>
+                <code>gh pr create --title "Title"</code>
                 <div class="desc">Create a pull request directly from the terminal.</div>
 
-                <code>gh pr list</code>
-                <div class="desc">View open pull requests for the repository.</div>
-
-                <code>gh issue create</code>
-                <div class="desc">Create a new issue on GitHub.</div>
+                <code>gh pr checkout [pr-number]</code>
+                <div class="desc">Checks out a specific pull request branch locally to test it.</div>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>Built for developers, by developers. Designed with clean code and glassmorphism.</p>
+        <p>Built with minimalist structure and responsive glassmorphism UI.</p>
     </footer>
 
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const themeText = document.getElementById('themeText');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        // Check for saved theme preference or default to dark
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        if (currentTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            updateToggleUI('light');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            let targetTheme = 'dark';
+            if (document.documentElement.getAttribute('data-theme') !== 'light') {
+                targetTheme = 'light';
+            }
+            
+            if (targetTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                updateToggleUI('light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+                updateToggleUI('dark');
+            }
+        });
+
+        function updateToggleUI(theme) {
+            if (theme === 'light') {
+                themeText.textContent = 'Dark Mode';
+                // Moon Icon
+                themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+            } else {
+                themeText.textContent = 'Light Mode';
+                // Sun Icon
+                themeIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+            }
+        }
+    </script>
 </body>
 </html>
